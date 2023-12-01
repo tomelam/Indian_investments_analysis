@@ -1,0 +1,4 @@
+## fetch_plot_mf.py - 2023.12.01
+### Added
+- Initial release.
+- Added a simple plot of the NAV history for one Indian mutual fund.
