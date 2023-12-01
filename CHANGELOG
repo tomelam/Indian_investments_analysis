@@ -1,5 +1,13 @@
 ## fetch_plot_mf_nav.py - 2023.12.01
 ### Added
+- Added a slider to change the normalization date while the program runs.
+- Print the normalization date in dd-mm-yyyy format.
+- Only compares funds with inaugeration dates at or prior to the normalization date.
+- When a data point is missing from the NAV series, default to the last previous one.
+- Changed the background to a lighter gray.
+
+## fetch_plot_mf_nav.py - 2023.12.01
+### Added
 - Normalize the NAVs to a base of 100 to allow fair comparisons of funds.
 - Make the plots more readable by using a dark background and wider plot lines.
 
