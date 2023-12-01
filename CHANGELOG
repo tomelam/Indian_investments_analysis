@@ -1,5 +1,10 @@
 ## fetch_plot_mf_nav.py - 2023.12.01
 ### Added
+- Normalize the NAVs to a base of 100 to allow fair comparisons of funds.
+- Make the plots more readable by using a dark background and wider plot lines.
+
+## fetch_plot_mf_nav.py - 2023.12.01
+### Added
 - Added the capability of plotting several funds.
 
 ### Fixed
