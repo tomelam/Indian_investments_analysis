@@ -6,5 +6,8 @@ https://api.mfapi.in/mf .
 
 This project is a work in progress. See CHANGELOG.
 
+See the ChatGPT conversation that helped write the initial code:
+[Fund NAV Data Plot](https://chat.openai.com/share/9849382e-0b4a-4051-9e40-03214602d751)
+
 -Tom Elam
 github.com/tomelam
