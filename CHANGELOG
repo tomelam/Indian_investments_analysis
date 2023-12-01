@@ -1,3 +1,10 @@
+## fetch_plot_mf_nav.py - 2023.12.01
+### Added
+- Added the capability of plotting several funds.
+
+### Fixed
+- Eliminated the extraneous window that the program created.
+
 ## fetch_plot_mf.py - 2023.12.01
 ### Added
 - Initial release.
