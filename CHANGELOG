@@ -1,3 +1,7 @@
+## fetch_plot_mf_nav - 2024.02.24
+### Added
+- Added a slider to change the first (minimum) date of the plot while the program runs.
+
 ## fetch_plot_mf_nav.py - 2023.12.01
 ### Added
 - Added a slider to change the normalization date while the program runs.
