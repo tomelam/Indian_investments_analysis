@@ -33,6 +33,46 @@ labels = [
 
 colors = ['brown', 'red', 'green', 'orange', 'cyan', 'pink', 'blue', 'magenta', 'yellow', 'purple']
 
+# DraggableCursor class definition
+class DraggableCursor:
+    def __init__(self, ax, initial_position):
+        self.ax = ax
+        self.cursor = ax.axvline(color='red', linestyle='-', linewidth=1)
+        self.cursor.set_xdata(initial_position)
+        self.press = False
+        self.x = 0
+
+    def connect(self):
+        """Connect to all the events we need."""
+        self.cidpress = self.ax.figure.canvas.mpl_connect('button_press_event', self.on_press)
+        self.cidrelease = self.ax.figure.canvas.mpl_connect('button_release_event', self.on_release)
+        self.cidmotion = self.ax.figure.canvas.mpl_connect('motion_notify_event', self.on_motion)
+
+    def on_press(self, event):
+        if event.inaxes != self.ax: return
+        contains, attr = self.cursor.contains(event)
+        if not contains: return
+        self.press = True
+        self.x = event.xdata
+
+    def on_release(self, event):
+        self.press = False
+        self.ax.figure.canvas.draw()
+
+    def on_motion(self, event):
+        if not self.press: return
+        if event.inaxes != self.ax: return
+        self.x = event.xdata
+        self.cursor.set_xdata(self.x)
+        #self.cursor.set_xdata(min_date)
+        self.ax.figure.canvas.draw()
+
+    def disconnect(self):
+        """Disconnect all the stored connection ids."""
+        self.ax.figure.canvas.mpl_disconnect(self.cidpress)
+        self.ax.figure.canvas.mpl_disconnect(self.cidrelease)
+        self.ax.figure.canvas.mpl_disconnect(self.cidmotion)
+
 # Initialize an empty DataFrame for all fund data
 all_fund_data = pd.DataFrame()
 
@@ -72,6 +112,10 @@ all_fund_data_normalized = (all_fund_data.divide(all_fund_data.loc[start_date], 
 # Create a figure and a plot
 fig, ax = plt.subplots(figsize=(10, 4))
 plt.subplots_adjust(left=0.1, bottom=0.25, right=0.9)
+
+# Instantiate and connect the DraggableCursor after your plot has been created
+dc = DraggableCursor(ax, start_date)
+dc.connect()
 
 # Plot the initial normalized NAV data
 lines = [ax.plot(all_fund_data_normalized.index, all_fund_data_normalized[label], color=color, label=label, linewidth=1.5)[0] for label, color in zip(labels, colors)]
