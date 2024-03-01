@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from matplotlib.widgets import Slider
+from matplotlib.widgets import Button
 import requests
 
 # URLs for the fund data API
@@ -33,45 +34,52 @@ labels = [
 
 colors = ['brown', 'red', 'green', 'orange', 'cyan', 'pink', 'blue', 'magenta', 'yellow', 'purple']
 
-# DraggableCursor class definition
-class DraggableCursor:
-    def __init__(self, ax, initial_position):
+# MultiCursor class definition
+class MultiCursor:
+    def __init__(self, ax):
         self.ax = ax
-        self.cursor = ax.axvline(color='red', linestyle='-', linewidth=1)
-        self.cursor.set_xdata(initial_position)
-        self.press = False
-        self.x = 0
+        self.cursors = []
+        self.active_cursor = None  # Track the active cursor
+        self.connect()  # Connect events globally
+
+    def add_cursor(self, color, initial_date):
+        cursor = self.ax.axvline(color=color, linestyle='dotted', linewidth=1)
+        cursor.set_xdata([initial_date])
+        text = self.ax.text(0.5, 0.95, '', transform=self.ax.transAxes, color=color, ha='right')
+
+        # Set the initial text annotation to display the corresponding date
+        date_str = initial_date.strftime('%Y-%m-%d')  # Convert datetime object to string if needed
+        text.set_text(date_str)
+
+        self.cursors.append({'cursor': cursor, 'text': text, 'color': color})
+
+        # After adding the cursor, force the figure to redraw
+        fig.canvas.draw_idle()
 
     def connect(self):
         """Connect to all the events we need."""
         self.cidpress = self.ax.figure.canvas.mpl_connect('button_press_event', self.on_press)
-        self.cidrelease = self.ax.figure.canvas.mpl_connect('button_release_event', self.on_release)
         self.cidmotion = self.ax.figure.canvas.mpl_connect('motion_notify_event', self.on_motion)
+        self.cidrelease = self.ax.figure.canvas.mpl_connect('button_release_event', self.on_release)
 
     def on_press(self, event):
-        if event.inaxes != self.ax: return
-        contains, attr = self.cursor.contains(event)
-        if not contains: return
-        self.press = True
-        self.x = event.xdata
-
-    def on_release(self, event):
-        self.press = False
-        self.ax.figure.canvas.draw()
+        for cursor_data in self.cursors:
+            cursor = cursor_data['cursor']
+            contains, attr = cursor.contains(event)
+            if contains:
+                self.active_cursor = cursor_data
+                return  # Stop checking once the active cursor is found
 
     def on_motion(self, event):
-        if not self.press: return
-        if event.inaxes != self.ax: return
-        self.x = event.xdata
-        self.cursor.set_xdata(self.x)
-        #self.cursor.set_xdata(min_date)
-        self.ax.figure.canvas.draw()
+        if self.active_cursor and event.inaxes == self.ax:
+            cursor = self.active_cursor['cursor']
+            cursor.set_xdata(event.xdata)
+            date = mdates.num2date(event.xdata).strftime('%Y-%m-%d')
+            self.active_cursor['text'].set_text(date)
+            self.ax.figure.canvas.draw()
 
-    def disconnect(self):
-        """Disconnect all the stored connection ids."""
-        self.ax.figure.canvas.mpl_disconnect(self.cidpress)
-        self.ax.figure.canvas.mpl_disconnect(self.cidrelease)
-        self.ax.figure.canvas.mpl_disconnect(self.cidmotion)
+    def on_release(self, event):
+        self.active_cursor = None  # Deactivate the cursor on release
 
 # Initialize an empty DataFrame for all fund data
 all_fund_data = pd.DataFrame()
@@ -110,12 +118,8 @@ start_date = all_fund_data.index.min()
 all_fund_data_normalized = (all_fund_data.divide(all_fund_data.loc[start_date], axis='columns')) * 100
 
 # Create a figure and a plot
-fig, ax = plt.subplots(figsize=(10, 4))
+fig, ax = plt.subplots(figsize=(8, 10))
 plt.subplots_adjust(left=0.1, bottom=0.25, right=0.9)
-
-# Instantiate and connect the DraggableCursor after your plot has been created
-dc = DraggableCursor(ax, start_date)
-dc.connect()
 
 # Plot the initial normalized NAV data
 lines = [ax.plot(all_fund_data_normalized.index, all_fund_data_normalized[label], color=color, label=label, linewidth=1.5)[0] for label, color in zip(labels, colors)]
@@ -123,18 +127,23 @@ lines = [ax.plot(all_fund_data_normalized.index, all_fund_data_normalized[label]
 vline = ax.axvline(x=start_date, color='black', linewidth=0.5)
 
 # Set up the normalization-date slider
-slider_min_date = mdates.date2num(all_fund_data.index.min().to_pydatetime())
-slider_max_date = mdates.date2num(all_fund_data.index.max().to_pydatetime())
-ax_slider = plt.axes([0.25, 0.1, 0.65, 0.03])
-slider = Slider(ax_slider, 'Normalization Date', slider_min_date, slider_max_date, valinit=slider_min_date)
+plot_min_date = mdates.date2num(all_fund_data.index.min().to_pydatetime())
+plot_max_date = mdates.date2num(all_fund_data.index.max().to_pydatetime())
+ax_slider = plt.axes([0.25, 0.2, 0.55, 0.03])
+slider = Slider(ax_slider, 'Normalization Date', plot_min_date, plot_max_date, valinit=plot_min_date)
 slider.valtext.set_text(mdates.num2date(slider.val).strftime('%d-%m-%Y'))
 
 # Set up the minimum-display-date slider
-ax_min_date_slider = plt.axes([0.25, 0.05, 0.65, 0.03])
-min_date_slider = Slider(ax_min_date_slider, 'Minimum Display Date', slider_min_date, slider_max_date, valinit=slider_min_date)
+ax_min_date_slider = plt.axes([0.25, 0.15, 0.55, 0.03])
+min_date_slider = Slider(ax_min_date_slider, 'Minimum Display Date', plot_min_date, plot_max_date, valinit=plot_min_date)
+
+# Save the last value for `val` so that the `add_cursor` function can redraw the plot correctly
+last_val = None
 
 # Function to update the plot based on the sliders
-def update(val):
+def plot_update(val):
+    print("plot_update: ", val)
+    last_val = val
     # Convert slider values to datetime objects
     new_base_date = mdates.num2date(slider.val).replace(tzinfo=None)
     min_display_date = mdates.num2date(min_date_slider.val).replace(tzinfo=None)
@@ -185,6 +194,17 @@ def update(val):
     slider.valtext.set_text(new_base_date.strftime('%d-%m-%Y'))
     min_date_slider.valtext.set_text(min_display_date.strftime('%m-%d-%Y'))
 
+def update(val=None, event_source=None):
+    print("update: ", val, event_source)
+    if event_source == 'slider':
+        plot_update(val)
+
+    # If the update is triggered by the Button, handle accordingly
+    elif event_source == 'button':
+        add_cursor(val)
+        # Optionally, update plot or add cursors as needed
+        # This might not require calling set_xdata directly, depending on the action
+
 def on_legend_click(event):
     legline = event.artist
     origline = legline_to_origline[legline]
@@ -193,9 +213,6 @@ def on_legend_click(event):
     # Dim the legend text as a visual cue
     legline.set_alpha(1.0 if vis else 0.2)
     fig.canvas.draw()
-
-
-
 
 # Initially set the correct format for the minimum display date slider text
 min_date_slider.valtext.set_text(mdates.num2date(min_date_slider.val).strftime('%d-%m-%Y'))
@@ -218,7 +235,32 @@ fig.canvas.mpl_connect('pick_event', on_legend_click)
 for line in legend.get_lines():
     line.set_linewidth(4)  # Set the desired linewidth for legend lines
 
-slider.on_changed(update)
-min_date_slider.on_changed(update)
+slider.on_changed(lambda val: update(val, event_source='slider'))
+min_date_slider.on_changed(lambda val: update(val, event_source='slider'))
+
+# Instantiate and connect the MultiCursor after your plot has been created
+multi_cursor = MultiCursor(ax)
+
+# Setup button for adding cursors
+ax_button = plt.axes([0.81, 0.05, 0.1, 0.075])
+button = Button(ax_button, 'Add Cursor', hovercolor='0.975')
+
+def add_cursor(val):
+    print('add_cursor" ', start_date)
+    print(start_date)
+    colors = ['red', 'blue', 'green']  # Example colors
+    color = colors[len(multi_cursor.cursors) % len(colors)]  # Cycle through colors
+    time_delta = pd.Timedelta(days=30)  # Kludge to set the cursor a bit to the left of the y-axis, so it is visible
+    multi_cursor.add_cursor(color, start_date + time_delta)
+    plot_update(val)
+
+button.on_clicked(lambda event: update(event_source='button'))
+
+# Example of setting explicit x-axis limits after adding a cursor or resizing the figure
+def update_ax_limits():
+    ax.set_xlim([plot_min_date, plot_max_date])  # min_date and max_date should be defined based on your data's date range
+
+# You can call update_ax_limits() after adding cursors or in response to a figure resize event
+fig.canvas.mpl_connect('resize_event', lambda event: update_ax_limits())
 
 plt.show()
