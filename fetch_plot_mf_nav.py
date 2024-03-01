@@ -141,6 +141,18 @@ def update(val):
     slider.valtext.set_text(new_base_date.strftime('%d-%m-%Y'))
     min_date_slider.valtext.set_text(min_display_date.strftime('%m-%d-%Y'))
 
+def on_legend_click(event):
+    legline = event.artist
+    origline = legline_to_origline[legline]
+    vis = not origline.get_visible()
+    origline.set_visible(vis)
+    # Dim the legend text as a visual cue
+    legline.set_alpha(1.0 if vis else 0.2)
+    fig.canvas.draw()
+
+
+
+
 # Initially set the correct format for the minimum display date slider text
 min_date_slider.valtext.set_text(mdates.num2date(min_date_slider.val).strftime('%d-%m-%Y'))
 
@@ -149,6 +161,14 @@ ax.set_title('Normalized Mutual Fund NAVs')
 ax.set_xlabel('Date')
 ax.set_ylabel('Normalized NAV')
 legend = ax.legend()
+
+# Make the legend items clickable
+legline_to_origline = {legline: origline for legline, origline in zip(legend.get_lines(), lines)}
+for legline in legend.get_lines():
+    legline.set_picker(True)  # Enable picking on the legend line
+    legline.set_pickradius(5)  # Set pick radius
+
+fig.canvas.mpl_connect('pick_event', on_legend_click)
 
 # Increase the linewidth in the legend
 for line in legend.get_lines():
