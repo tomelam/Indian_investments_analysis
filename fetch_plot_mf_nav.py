@@ -3,6 +3,7 @@
 # ================================================
 
 import logging
+import toml
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
@@ -13,47 +14,6 @@ import requests
 from matplotlib.lines import Line2D
 from datetime import timedelta
 #import numpy  # Just for debugging
-
-# ================================================
-#             CONSTANTS
-# ================================================
-
-# URLs for the fund data API
-urls = [
-    'https://api.mfapi.in/mf/119364', # Bank of India Manu & Infra, Direct, Growth
-    'https://api.mfapi.in/mf/145454', # DSP Healthcare, Direct, Growth
-    'https://api.mfapi.in/mf/119028', # DSP Natural Resources & New Energy, Direct, Growth
-    'https://api.mfapi.in/mf/119277', # DSP World Gold FoF, Direct, Growth
-    'https://api.mfapi.in/mf/129312', # ICICI Prudential Dividend Yield Equity, Direct, Growth
-    'https://api.mfapi.in/mf/120587', # ICICI FMCG, Direct, Growth
-    'https://api.mfapi.in/mf/120323', # ICICI Value Discovery, Direct, Growth
-    'https://api.mfapi.in/mf/106654', # Invesco India Infrastructure, Direct, Growth
-    'https://api.mfapi.in/mf/120823', # quant Active, Direct, Growth
-    'https://api.mfapi.in/mf/118527'  # Templeton India Equity Income, Direct, Growth
-]
-
-labels = [
-    '01. BoI Mfg & Infra',           # brown
-    '02. DSP Healthcare',            # red
-    '03. DSP Nat Rsrc & New Energy', # green
-    '04. DSP World Gold',            # orange
-    '05. ICICI Div Yld Eqty',        # cyan
-    '06. ICICI FMCG',                # pink
-    '07. ICICI Value',               # blue
-    '08. Invesco Infra',             # magenta
-    '09. quant Active',              # yellow
-    '10. Templeton Eqty Income'      # purple
-]
-
-colors = ['brown', 'red', 'green', 'orange', 'cyan', 'pink', 'blue', 'magenta', 'yellow', 'purple']
-
-# For debugging calle to fig.canvas.draw_idle()
-set_up_subplots_debugging = True
-
-# It can sometimes help with debugging to make the following `False`
-make_plot_interactive = True
-
-#set_log_scale = False
 
 # ================================================
 #             SET UP A LOGGER
@@ -74,6 +34,40 @@ logger.setLevel(logging.DEBUG)  # Turn on info and debug messages
 logger.info("")
 logger.info("===== STARTING THE PROGRAM =====")
 logger.info("")
+
+# ================================================
+#             CONSTANTS
+# ================================================
+
+def read_and_validate_config(file_path):
+    config = toml.load(file_path)
+
+    constants = config['constants']
+
+    # Check if all constants have the same number of elements
+    lengths = [len(constants[key]) for key in constants]
+    if len(set(lengths)) != 1:
+        raise ValueError("All constant arrays must have the same number of elements.")
+
+    return constants
+
+logger.info("")
+logger.info("Reading `config.toml`")
+logger.info("")
+
+config = read_and_validate_config('config.toml')
+logger.debug(f"config: {config}")
+
+urls = config['urls']
+labels = config['labels']
+colors = config['colors']
+
+#urls = config['constants']['urls']
+#labels = config['constants']['urls']
+#colors = config['constants']['colors']
+
+# For debugging calle to fig.canvas.draw_idle()
+set_up_subplots_debugging = True
 
 # ================================================
 #             THE DataFrame
