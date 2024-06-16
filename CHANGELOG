@@ -1,3 +1,8 @@
+## fetch_plot_mf_nav - 2024.06.15
+- Added text boxes to enter dates.
+- Added optional log scaling for Y axis.
+- Added better DEBUG and INFO logging using the `logging` module.
+
 ## fetch_plot_mf_nav - 2024.05.30
 - Fixed the date format of the minimum display date.
 - Added the capability of hiding the plot of a mutual fund's normalised NAV.
