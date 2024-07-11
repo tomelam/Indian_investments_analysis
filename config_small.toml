@@ -1,0 +1,21 @@
+## A simple configuration with a few funds we invest in.
+
+# Configuration for constants
+[constants]
+
+# URLs for the fund data API
+urls = [
+    'https://api.mfapi.in/mf/129312', # ICICI Prudential Dividend Yield, Direct, Growth
+    'https://api.mfapi.in/mf/145454', # DSP Healthcare, Direct, Growth
+    'https://api.mfapi.in/mf/119028', # DSP Natural Resources & New Energy, Direct, Growth
+    'https://api.mfapi.in/mf/106654', # Invesco India Infrastructure, Direct, Growth
+]
+
+labels = [
+    '01. ICICI Div Yld Eqty',        # pink
+    '02. DSP Healthcare',            # blue
+    '03. DSP Nat Rsrc & New Energy', # gray
+    '04. Invesco Infra',             # yellow
+]
+
+colors = ['brown', 'red', 'green', 'orange', ] # 'cyan', 'pink', 'blue', 'gray', 'yellow', 'purple', ]

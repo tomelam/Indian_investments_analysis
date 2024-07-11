@@ -1,0 +1,45 @@
+## Some interesting funds: ValueResearchOnline.com "wealth builders" and the good funds we own
+
+# Configuration for constants
+[constants]
+
+# URLs for the fund data API
+urls = [
+    'https://api.mfapi.in/mf/149180', # 01. HDFC Developed World Indexes Fund of Funds, Direct, Growth
+    'https://api.mfapi.in/mf/120826', # 02. quant Large and Mid Cap, Direct, Growth
+    'https://api.mfapi.in/mf/148404', # 03. Bank of India Flexi Cap, Direct, Growth
+    'https://api.mfapi.in/mf/151113', # 04. HSBC Value, Direct, Growth
+    'https://api.mfapi.in/mf/146349', # 05. ICICI Prudential Retirement Pure Equity, Direct, Growth
+    'https://api.mfapi.in/mf/120323', # 06. ICICI Prudential Value, Direct, Growth
+    'https://api.mfapi.in/mf/129312', # 07. ICICI Prudential Dividend Yield, Direct, Growth
+    'https://api.mfapi.in/mf/130498', # 08. HDFC Large and Mid Cap, Direct, Growth
+    'https://api.mfapi.in/mf/119028', # 09. DSP Natural Resources & New Energy, Direct, Growth
+    'https://api.mfapi.in/mf/119835', # 10. SBI Contra, Direct, Growth
+    'https://api.mfapi.in/mf/119364', # 11. Bank of India Manufacturing and Infrastructure, Direct, Growth
+    'https://api.mfapi.in/mf/106654', # 12. Invesco India Infrastructure, Direct, Growth
+    'https://api.mfapi.in/mf/120823', # 13. quant Active, Direct, Growth
+    'https://api.mfapi.in/mf/118494', # 14. Templeton India Value, Direct, Growth
+    'https://api.mfapi.in/mf/120046', # 15. HSBC Flexi Cap, Direct, Growth
+    'https://api.mfapi.in/mf/120596', # 16. ICICI Prudential Large and Cap, Direct, Growth
+]
+
+labels = [
+    '01. HDFC Dev World FoF',        # brown
+    '02. quant Large & Mid Cap',     # red
+    '03. BoI Flexi Cap',             # green
+    '04. HSBC Value',                # orange
+    '05. ICICI Retirement Eqty',     # cyan
+    '06. ICICI Value Eqty',          # pink
+    '07. ICICI Div Yld',             # blue
+    '08. HDFC Large & Mid Cap',      # gray
+    '09. DSP Nat Rsrc',              # yellow
+    '10. SBI Contra',                # purple
+    '11. BoI Manu & Infra',          # magenta
+    '12. Invesco Infra',             # lime
+    '13. quant Active',              # gold
+    '14. Templeton Value',           # teal
+    '15. HSBC Flexi Cap',            # navy
+    '16. ICICI Large & Map Cap',     # maroon
+]
+
+colors = ['brown', 'red', 'green', 'orange', 'cyan', 'pink', 'blue', 'gray', 'yellow', 'purple', 'magenta', 'lime', 'gold', 'teal', 'navy', 'maroon',]

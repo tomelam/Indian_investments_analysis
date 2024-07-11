@@ -1,0 +1,31 @@
+# Configuration for constants - our June, 2024 portfolio
+[constants]
+
+# URLs for the fund data API
+urls = [
+    'https://api.mfapi.in/mf/119364', # Bank of India Manu & Infra, Direct, Growth
+    'https://api.mfapi.in/mf/145454', # DSP Healthcare, Direct, Growth
+    'https://api.mfapi.in/mf/119028', # DSP Natural Resources & New Energy, Direct, Growth
+    'https://api.mfapi.in/mf/119277', # DSP World Gold FoF, Direct, Growth
+    'https://api.mfapi.in/mf/129312', # ICICI Prudential Dividend Yield Equity, Direct, Growth
+    'https://api.mfapi.in/mf/120587', # ICICI FMCG, Direct, Growth
+    'https://api.mfapi.in/mf/120323', # ICICI Value Discovery, Direct, Growth
+    'https://api.mfapi.in/mf/106654', # Invesco India Infrastructure, Direct, Growth
+    'https://api.mfapi.in/mf/120823', # quant Active, Direct, Growth
+    'https://api.mfapi.in/mf/118527'  # Templeton India Equity Income, Direct, Growth
+]
+
+labels = [
+    '01. BoI Mfg & Infra',           # brown
+    '02. DSP Healthcare',            # red
+    '03. DSP Nat Rsrc & New Energy', # green
+    '04. DSP World Gold',            # orange
+    '05. ICICI Div Yld Eqty',        # cyan
+    '06. ICICI FMCG',                # pink
+    '07. ICICI Value',               # blue
+    '08. Invesco Infra',             # magenta
+    '09. quant Active',              # yellow
+    '10. Templeton Eqty Income'      # purple
+]
+
+colors = ['brown', 'red', 'green', 'orange', 'cyan', 'pink', 'blue', 'magenta', 'yellow', 'purple']

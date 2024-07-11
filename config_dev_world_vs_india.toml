@@ -1,0 +1,15 @@
+# Configuration for constants - to see India has outperformed indexes of the developed world
+[constants]
+
+# URLs for the fund data API
+urls = [
+    'https://api.mfapi.in/mf/149180', # HDFC Developed World Indexes Fund of Funds, Direct, Growth
+    'https://api.mfapi.in/mf/120826', # quant Large and Mid Cap, Direct, Growth
+]
+
+labels = [
+    '01. HDFC Dev World FoF',        # brown
+    '02. quant Large & Mid Cap',     # red
+]
+
+colors = ['brown', 'red', ]

@@ -1,0 +1,35 @@
+# Configuration for constants - our July, 2024 portfolio
+[constants]
+
+# URLs for the fund data API
+urls = [
+    'https://api.mfapi.in/mf/106654', # Invesco India Infrastructure, Direct, Growth
+    'https://api.mfapi.in/mf/120833', # quant Infrastructure, Direct, Growth
+    'https://api.mfapi.in/mf/120841', # quant Mid Cap, Direct, Growth
+    'https://api.mfapi.in/mf/120828', # quant Small Cap, Direct, Growth
+    'https://api.mfapi.in/mf/120826', # quant Large & Mid Cap, Direct, Growth
+    'https://api.mfapi.in/mf/120823', # quant Active, Direct, Growth
+    'https://api.mfapi.in/mf/127042', # Motilal Oswal Midcap, Direct, Growth
+    'https://api.mfapi.in/mf/118778', # Nippon India Small Cap, Direct, Growth
+    'https://api.mfapi.in/mf/129312', # ICICI Prudential Dividend Yield Equity, Direct, Growth
+    'https://api.mfapi.in/mf/120323', # ICICI Value Discovery, Direct, Growth
+    'https://api.mfapi.in/mf/119364', # BoI Mfg & Infra, Direct, Growth
+    'https://api.mfapi.in/mf/119277', # DSP World Gold FoF, Direct, Growth
+]
+
+labels = [
+    '01. Invesco Infra',             # brown
+    '02. quant Infra',               # red
+    '03. quant Mid Cap',             # green
+    '04. quant Small Cap',           # purple
+    '05. quant Large & Mid Cap',     # cyan
+    '06. quant Active',              # pink
+    '07. Motilal Oswal Midcap',      # blue
+    '08. Nippon India Small Cap',    # magenta
+    '09. ICICI Div Yld',             # gray
+    '10. ICICI Value',               # yellow
+    '11. BoI Mfg & Infra',           # orange
+    '12. DSP World Gold',            # gold
+]
+
+colors = ['brown', 'red', 'green', 'purple', 'cyan', 'pink', 'blue', 'magenta', 'gray', 'yellow', 'orange', 'gold']
