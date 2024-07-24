@@ -20,6 +20,7 @@ import numpy  # For debugging in function `on_mouse_move`
 import pickle
 import sys
 import traceback
+import numpy
 
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
@@ -27,6 +28,11 @@ import matplotlib.dates as mdates
 from matplotlib.widgets import Slider, Button, TextBox
 from matplotlib.dates import num2date
 from matplotlib.lines import Line2D
+
+# Alias the specific classes and functions from ticker
+ScalarFormatter = ticker.ScalarFormatter
+#FormatStrFormatter = ticker.FormatStrFormatter
+#LinearLocator = ticker.LinearLocator
 
 # ===================================================================================================
 #                   GLOBALS
@@ -443,6 +449,10 @@ class PlotManager:
             self.ax_method_call('set_xlim', [min_display_date, max_display_date])
             self.ax_method_call('relim')
             self.ax_method_call('autoscale_view')
+
+            # Check if the y-axis is set to log scale and reapply log-scale formatting if necessary
+            if pm.get_ax().get_yscale() == 'log':
+                apply_log_scale_formatting()
             
             pm.get_fig().canvas.draw_idle()
         else:
@@ -556,6 +566,7 @@ class ToggleSwitch:
     def show(self):
         #plt.show()  # FIXME: not sure what this would be good for, if anything
         pass
+
 # End class ToggleSwitch
 
 # ===================================================================================================
@@ -699,6 +710,7 @@ def debug_data():
 def set_log_yaxis_scale(scale_type):
     global pm
     val = pm.get_min_date_slider().val
+    formatter = ticker.ScalarFormatter()
     
     match scale_type:
         case "linear":
@@ -706,14 +718,26 @@ def set_log_yaxis_scale(scale_type):
             pm.update(val)
         case "log":
             pm.ax_method_call('set_yscale', 'log')
-            # Set y-axis formatter for log scale
-            pm.get_ax().yaxis.set_major_formatter(ticker.ScalarFormatter())
-            # Example ticks, adjust as needed
-            pm.ax_method_call('set_yticks', [10, 20, 50, 100, 200, 500, 1000])
+            apply_log_scale_formatting()
             pm.update(val)
         case _:
             logger.debug("failed\n")
-            
+
+# Apply log scale formatting to the y-axis
+def apply_log_scale_formatting():
+    global pm
+    formatter = ticker.ScalarFormatter()
+    
+    formatter.set_scientific(False)
+    formatter.set_useOffset(False)
+    pm.get_ax().yaxis.set_major_formatter(formatter)
+    subs = numpy.concatenate([
+        numpy.arange(1.0, 2.0, 0.2),   # Finer ticks between 1 and 2
+        numpy.arange(2.0, 5.0, 0.5),   # Medium ticks between 2 and 5
+        numpy.arange(5.0, 10.0, 1.0)   # Coarser ticks between 5 and 10
+    ])
+    pm.get_ax().yaxis.set_major_locator(ticker.LogLocator(base=10, subs=subs, numticks=20))
+
 # ===================================================================================================
 #                   MAIN
 # ===================================================================================================
