@@ -22,7 +22,7 @@ https://api.mfapi.in/mf .
 ### Running the Script
 
 ```
-python fetch_plot_mf_nav.py
+python plot_mutual_funds.py
 ```
 
 ### Interactive Plot Controls
